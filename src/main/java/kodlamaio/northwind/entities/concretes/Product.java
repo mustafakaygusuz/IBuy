@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Data      //lombok getter setter
-@Entity
+@Entity    //Spring için Entity katmanını belirtiyor
 @Table(name="products")
 @AllArgsConstructor  //tüm argümanlar constructora parametre oalrak ekleniyor
 @NoArgsConstructor   //argümansız constructor
