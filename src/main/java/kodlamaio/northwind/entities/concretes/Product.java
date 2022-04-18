@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Data
+@Data      //lombok getter setter
 @Entity
 @Table(name="products")
 @AllArgsConstructor  //tüm argümanlar constructora parametre oalrak ekleniyor
