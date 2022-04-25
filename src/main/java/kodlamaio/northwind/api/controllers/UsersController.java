@@ -2,13 +2,17 @@ package kodlamaio.northwind.api.controllers;
 
 import kodlamaio.northwind.business.abstracts.UserService;
 import kodlamaio.northwind.core.entities.User;
-import kodlamaio.northwind.core.utilities.results.Result;
+import kodlamaio.northwind.core.utilities.results.ErrorDataResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/users")
@@ -22,10 +26,24 @@ public class UsersController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> add(@RequestBody User user){  //Result yerine ? yazmamızın nedeni ne döneceğinin kesin olmaması ok değilse Result dönmez
+    public ResponseEntity<?> add(@Valid @RequestBody User user){  //Result yerine ? yazmamızın nedeni ne döneceğinin kesin olmaması ok değilse Result dönmez
         return ResponseEntity.ok(this.userService.add(user)); //işlem okeyse içindeki işlemi gerçekleştirir.
     }
 
+    //AOP
+    //Global Exception Handler
+    //.class == typeof() in C#
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST) //default olarak bad request - 500 hatası dönsün
+    public ErrorDataResult<Object> handleValidationException(MethodArgumentNotValidException exceptions){
+        Map<String, String> validationErrors = new HashMap<String,String>(); //dictionary<email,hata>
+        for(FieldError fieldError : exceptions.getBindingResult().getFieldErrors()){
+            validationErrors.put(fieldError.getField(),fieldError.getDefaultMessage());
+        }
+
+        ErrorDataResult<Object> errors = new ErrorDataResult<Object>(validationErrors,"Doğrulama hataları");
+        return errors;
+    }
 
 }
 
