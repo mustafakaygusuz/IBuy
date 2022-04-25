@@ -58,7 +58,7 @@ public class ProductsController {
         return this.productService.getAllSorted();
     }
 
-    @GetMapping("/getProductWithCategoryDetails")  //HTTP get
+    @GetMapping("/getProductWithCategoryDetails")
     public DataResult<List<ProductWithCategoryDto>> getProductWithCategoryDetails(){
         return this.productService.getProductWithCategoryDetails();
     }
